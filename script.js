@@ -107,6 +107,42 @@ function GameController (
         console.log(`${getActivePlayer().name}'s turn.`)
     }
 
+
+    //winner check
+    const winCheck = () => {
+        let currBoard=board.getBoard();
+        let size = currBoard.length;
+
+
+        for (let row of currBoard) {
+            const firstValue = row[0].getValue();
+            if ((firstValue === 1 || firstValue === 2) && row.every(cell => cell.getValue() === firstValue)) {
+                return true;
+            }
+        }
+
+        for(let col=0;col< size;col++){
+            const firstValue = currBoard[0][col].getValue();
+            if((firstValue === 1 || firstValue === 2) && currBoard.every(row => row[col] === firstValue)){
+                return true;
+            }
+        }
+
+
+    // Check top-left to bottom-right diagonal
+    const firstDiagonalValue = currBoard[0][0].getValue();
+    if ((firstDiagonalValue === 1 || firstDiagonalValue === 2) && currBoard.every((row, idx) => row[idx].getValue() === firstDiagonalValue)) {
+        return true;
+    }
+
+    // Check top-right to bottom-left diagonal
+    const secondDiagonalValue = currBoard[0][size - 1].getValue();
+    if ((secondDiagonalValue === 1 || secondDiagonalValue === 2) && currBoard.every((row, idx) => row[size - 1 - idx].getValue() === secondDiagonalValue)) {
+        return true;
+    }
+    return false;
+    }
+
     //playing one round
 
     const playRound = (row,column) =>{
@@ -115,6 +151,10 @@ function GameController (
         }
         else{
             console.log(`marking   ${getActivePlayer().name}'s `)
+            if (winCheck() == true){
+                console.log(`winner is ${getActivePlayer().name}`);
+                return;
+            }
             switchPlayerTurn();
             printNewRound();
         }
