@@ -1,4 +1,4 @@
-function Gameboard() {
+function GameBoard() {
     // initialization
     const rows = 3;
     const columns = 3;
@@ -61,16 +61,18 @@ function Cell() {
 //defining the flow of the game
 
 function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Two") {
-    let board = Gameboard();
+    let board = GameBoard();
 
     const players = [
         {
             name: PlayerOneName,
-            token: 1
+            token: 1,
+            win: 0
         },
         {
             name: PlayerTwoName,
-            token: 2
+            token: 2,
+            win: 0
         }
     ];
 
@@ -97,6 +99,10 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
         let currBoard = board.getBoard();
         let size = currBoard.length;
 
+        const allPositive = currBoard.every(row => row.every(cell => cell.getValue() > 0));
+        if(allPositive){
+            return 3;
+        }
         // Check horizontal wins
         for (let row of currBoard) {
             const firstValue = row[0].getValue();
@@ -139,13 +145,26 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
 
     // playing one round
     const playRound = (row, column) => {
+
+    
         if (board.markCell(row, column, getActivePlayer().token) === 0) {
             console.log(`INVALID MOVE!!!`);
         } else {
             console.log(`marking ${getActivePlayer().name}'s`);
             if (winCheck() === true) {
-                console.log(`Winner is ${getActivePlayer().name}`);
+                getActivePlayer().win += 1;
                 board.printBoard();
+                console.log(`Winner is ${getActivePlayer().name} with ${getActivePlayer().win} wins`);
+                if (getActivePlayer().win >= 3) {
+                    console.log(`${getActivePlayer().name} has won the game!`);
+                    return;
+                }
+                resetGame();
+                return;
+            }
+            else if(winCheck() === 3){
+                board.printBoard();
+                console.log(`TIE!!!`);
                 resetGame();
                 return;
             }
@@ -153,16 +172,13 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
             printNewRound();
         }
     };
-
     // resetting the game
     const resetGame = () => {
-        board = Gameboard(); // Reinitialize the game board
+        board = GameBoard(); // Reinitialize the game board
         activePlayer = players[0]; // Reset to Player One
         console.log("The game has been reset.");
         printNewRound(); // Print the initial state of the new game
     };
-
-    printNewRound();
 
     return {
         playRound,
