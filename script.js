@@ -3,7 +3,6 @@ function GameBoard() {
     const rows = 3;
     const columns = 3;
     const board = [];
-
     // constructing 2d array
     for (let i = 0; i < rows; i++) {
         board[i] = [];
@@ -62,7 +61,7 @@ function Cell() {
 
 function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Two") {
     let board = GameBoard();
-
+    let display = gameDisplay(board);
     const players = [
         {
             name: PlayerOneName,
@@ -91,6 +90,7 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
     // new round
     const printNewRound = () => {
         board.printBoard();
+        gameDisplay(board).renderDisplay();
         console.log(`${getActivePlayer().name}'s turn.`);
     };
 
@@ -153,6 +153,7 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
             console.log(`marking ${getActivePlayer().name}'s`);
             if (winCheck() === true) {
                 getActivePlayer().win += 1;
+                display.renderDisplay(board);
                 board.printBoard();
                 console.log(`Winner is ${getActivePlayer().name} with ${getActivePlayer().win} wins`);
                 if (getActivePlayer().win >= 3) {
@@ -163,6 +164,7 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
                 return;
             }
             else if(winCheck() === 3){
+                display.renderDisplay();
                 board.printBoard();
                 console.log(`TIE!!!`);
                 resetGame();
