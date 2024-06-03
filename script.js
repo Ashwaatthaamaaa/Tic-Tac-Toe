@@ -186,4 +186,36 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
     };
 }
 
+
+function gameDisplay(board){
+    board = board.getBoard()
+    const renderDisplay = () => {
+        let boardContainer = document.querySelector('.board');
+        boardContainer.innerHTML = "";
+
+        board.forEach((row, rowIndex) => {
+
+            row.forEach((cell, colIndex) => {
+                const cellElement = document.createElement("div");
+                cellElement.classList.add("gameCards");
+                cellElement.textContent = cell.getValue(); // Fill with cell value
+                boardContainer.appendChild(cellElement);
+            });
+
+        });
+    }
+
+
+    return{
+        renderDisplay
+    };
+}
+
+
+
+
+
+
+
+
 const game = GameController();
