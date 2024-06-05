@@ -48,7 +48,8 @@ function Cell() {
     };
 }
 
-function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Two") {
+function GameController(display, PlayerOneName = "Player One", PlayerTwoName = "Player Two",roundCnt = 0) {
+    let windisplay = document.querySelector('.display')
     let board = GameBoard();
     const players = [
         {
@@ -70,6 +71,11 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
     };
 
     const getActivePlayer = () => activePlayer;
+
+
+    const getRoundCount = () => roundCnt;
+
+    const getWinCnt = () => [players[0].win,players[1].win];
 
     const printNewRound = () => {
         board.printBoard();
@@ -132,6 +138,7 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
                 board.printBoard();
                 console.log(`Winner is ${getActivePlayer().name} with ${getActivePlayer().win} wins`);
                 if (getActivePlayer().win >= 3) {
+                    windisplay.textContent = `Winner is ${getActivePlayer().name} with ${getActivePlayer().win} wins`;
                     console.log(`${getActivePlayer().name} has won the game!`);
                     return;
                 }
@@ -139,6 +146,7 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
                 return;
             } else if (winStatus === 3) {
                 board.printBoard();
+                windisplay.textContent ="TIE!!!!!!!";
                 console.log(`TIE!!!`);
                 resetGame();
                 return;
@@ -149,27 +157,39 @@ function GameController(PlayerOneName = "Player One", PlayerTwoName = "Player Tw
     };
 
     const resetGame = () => {
+        roundCnt+=1;
         board = GameBoard();
         activePlayer = players[0];
-        display = ScreenController(board);
+        windisplay.textContent =""
         console.log("The game has been reset.");
         printNewRound();
+        console.log(roundCnt);
     };
 
     return {
         playRound,
         getActivePlayer,
+        resetGame,
+        getRoundCount,
+        getWinCnt,
         getBoard: () => board.getBoard()
     };
 }
 
-function ScreenController() {
-    const game = GameController();
-    const board = game.getBoard();
-    let boardContainer = document.querySelector('.board');
+function ScreenController(game, playerOne, playerTwo) {
+    const boardContainer = document.querySelector('.board');
+    const playerOneUpdate = document.querySelector('#playerOneName');
+    const playerTwoUpdate = document.querySelector('#playerTwoName');
+    const roundUpdate = document.querySelector('#roundNumber');
+    const playerOneWin = document.querySelector("#playerOneScore");
+    const playerTwoWin = document.querySelector("#playerTwoScore");
 
-    const renderDisplay = () => {
+    const renderDisplay = (board) => {
         boardContainer.innerHTML = "";
+        playerOneUpdate.textContent = playerOne;
+        playerTwoUpdate.textContent = playerTwo;
+        roundUpdate.textContent = game.getRoundCount();
+        [playerOneWin.textContent, playerTwoWin.textContent]= game.getWinCnt();
 
         board.forEach((row, rowIndex) => {
             row.forEach((cell, colIndex) => {
@@ -191,14 +211,24 @@ function ScreenController() {
         const row = parseInt(cellElement.dataset.row);
         const column = parseInt(cellElement.dataset.column);
         game.playRound(row, column);
-        renderDisplay();
+        renderDisplay(game.getBoard());
     };
 
     boardContainer.addEventListener("click", clickHandler);
-    renderDisplay();
+
+    renderDisplay(game.getBoard());
+
     return {
         renderDisplay
     };
 }
 
-ScreenController();
+let startBtn = document.querySelector('.startBtn');
+startBtn.addEventListener('click', () => {
+    let playerOne = document.querySelector("#playerOne").value;
+    let playerTwo = document.querySelector('#playerTwo').value;
+    startBtn.textContent = startBtn.textContent === "START"? "RESET":"START";
+    const game = GameController(ScreenController, playerOne, playerTwo);
+    ScreenController(game, playerOne, playerTwo);
+    
+});

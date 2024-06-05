@@ -7,6 +7,8 @@
   body {
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    background-color: #f0f2f5;
+    color: #333;
   }
   img, picture, video, canvas, svg {
     display: block;
@@ -25,6 +27,9 @@
 
 
 .container{
+    display: grid;
+    grid-template-columns: 1fr 10fr 1fr;
+    gap: 50px;
     margin-top:50px ; 
     height: 500px;
     width: 500px;
@@ -34,11 +39,90 @@
 
 .board{
     display: grid;
-    width: 100%;
+    min-width: 100%;
     grid-template-columns: repeat(3,1fr);
-    grid-template-rows: repeat(3,minmax(166.66px, 1fr));
+    grid-template-rows: repeat(3,150px);
+    min-height: 300px;
 }
 
 .gameCards{
     border: 1px solid red;
+}
+
+.players,.btn{
+    display: flex;
+    flex: 1 0;
+    align-items: center;
+    justify-content:space-around;
+    margin-top: 20px;
+    border-radius: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 80%;
+    max-width: 600px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    box-sizing: border-box;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10px;
+}
+
+.player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 35%;
+}
+
+.player-name {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+}
+
+.player-score {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #007bff;
+}
+
+.round-counter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+}
+
+.round-label {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #666;
+}
+
+.round-number {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-top: 10px;
+    color: #ff6347;
 }
